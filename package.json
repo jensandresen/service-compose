@@ -8,5 +8,10 @@
   },
   "keywords": [],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^2.3.0",
+    "pad-right": "^0.2.2",
+    "yamlfile": "^1.0.1"
+  }
 }
