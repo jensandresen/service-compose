@@ -1,10 +1,9 @@
 const {spawn} = require("child_process");
+const {setTimeout} = require("timers");
+const path = require("path");
 const yamlFile = require("yamlfile");
-const readline = require("readline");
 const padright = require("pad-right");
 const chalk = require("chalk");
-const path = require("path");
-const {setTimeout} = require("timers");
 
 const composeFileName = "./service-compose.yaml";
 const data = yamlFile.readFileSync(composeFileName);
