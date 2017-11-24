@@ -1,0 +1,35 @@
+components:
+  web:
+    name: frontend
+    type: website
+    app:
+      root: ./apps/frontend
+      start: index.js
+      port: 3000
+    environment:
+      backend_url: http://localhost:3001
+  backend:
+    name: backend
+    type: website
+    app:
+      root: ./apps/backend
+      start: server.js
+      port: 3001
+    environment:
+      myname: lala backend
+runners:
+  nodejs:
+    cmd: node
+    args: 
+      - <root>/<start>
+    supports:
+      - nodejs
+  iisexpress:
+    cmd: powershell
+    args:
+      - iisexpress
+      - /port:<port>
+      - /path:"MakeAbsolute(<root>)"
+    pause: 2000
+    supports:
+      - website
