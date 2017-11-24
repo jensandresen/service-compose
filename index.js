@@ -104,9 +104,6 @@ function print(component, text) {
 const components = convertToArray(data.components);
 const runners = convertToArray(data.runners);
 
-const web = components[0];
-const runner = runners[1];
-
 let labelLength = 0;
 components.forEach(x => {
     if (x.id.length > labelLength) {
@@ -122,9 +119,21 @@ const colors = [
     "orange"
 ];
 
-components.forEach((x, index) => {
-    x.label = padright(x.id, labelLength, " ");
-    x.color = colors[index];
+components.forEach(component => {
+    const runner = runners.find(runner => {
+        const supportedTypes = runner.supports || [];
+        return supportedTypes.find(type => component.type == type);
+    });
 
-    runComponent(x, runner, runner.pause);
+    if (!runner) {
+        console.log(`No runner for component "${component.id}" of type "${component.type}" available.`);
+        process.exit(1);
+    }
+});
+
+components.forEach((component, index) => {
+    component.label = padright(component.id, labelLength, " ");
+    component.color = colors[index];
+
+    runComponent(component, runner, runner.pause);
 });
