@@ -1,6 +1,5 @@
 components:
-  web:
-    name: frontend
+  frontend:
     type: website
     app:
       root: ./apps/frontend
@@ -9,7 +8,6 @@ components:
     environment:
       backend_url: http://localhost:3001
   backend:
-    name: backend
     type: website
     app:
       root: ./apps/backend
@@ -30,6 +28,6 @@ runners:
       - iisexpress
       - /port:<port>
       - /path:"MakeAbsolute(<root>)"
-    pause: 2000
+    delay: 2000
     supports:
       - website
