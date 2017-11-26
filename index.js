@@ -1,12 +1,12 @@
-const {spawn} = require("child_process");
-const {setTimeout} = require("timers");
 const path = require("path");
 const yamlFile = require("yamlfile");
 const padright = require("pad-right");
-const chalk = require("chalk");
+
+const RunnerService = require("./runnerservice.js");
 
 const composeFileName = "./service-compose.yaml";
 const data = yamlFile.readFileSync(composeFileName);
+
 
 function convertToArray(obj) {
     const result = new Array();
@@ -20,120 +20,45 @@ function convertToArray(obj) {
     return result;
 }
 
-function runComponent(component, runner, delay) {
-    const delayDuration = delay || 0;
-    
-    if (delayDuration > 0) {
-        setTimeout(() => runComponent(component, runner), delayDuration);
-    } else {
-        runComponent(component, runner);
-    }        
-}
 
-function runComponent(component, runner) {
-    
-    let cmd = runner.cmd;
-    
-    for (let key in component.app) {
-        if (component.app.hasOwnProperty(key)) {
-            const token = `<${key}>`;
-            const value = component.app[key];
-            cmd = cmd.replace(token, value);    
-        }
-    }
-
-    let args = runner.args.map(x => {
-        let arg = x;
-        for (let key in component.app) {
-            if (component.app.hasOwnProperty(key)) {
-                const token = `<${key}>`;
-                const value = component.app[key];
-                arg = arg.replace(token, value);    
-            }
-        }
-        return arg;
-    });
-
-    args = args.map(x => {
-        let arg = x;
-        
-        const match = arg.match(/MakeAbsolute\((.*?)\)/);
-        
-        if (match && match.length > 0) {
-            const fullPath = path.resolve(match[1]);
-            arg = arg.replace(/MakeAbsolute\((.*?)\)/, fullPath);
-        }
-                
-        return arg;        
-    });
-
-    print(component, "=".repeat(60));
-    print(component, `EXEC: ${cmd} ${args.join(" ")}`);
-
-    const subprocess = spawn(cmd, args, {
-        encoding: "utf8"
-    });
-
-    subprocess.stdout.on("data", data => {
-        const line = data
-            .toString("utf8")
-            .replace('\n', '')
-            .replace('\r', '');
-
-        print(component, line);
-    });
-
-    subprocess.stderr.on("data", data => {
-        const line = data
-            .toString("utf8")
-            .replace('\n', '')
-            .replace('\r', '');
-
-        print(component, line);
-    });
-}
-
-function print(component, text) {
-    const color = component.color;
-    const line = `[${component.label}] ${text}`;
-
-    const msg = chalk.keyword(color)(line);
-    console.log(msg);    
-}
 
 const components = convertToArray(data.components);
-const runners = convertToArray(data.runners);
 
-let labelLength = 0;
-components.forEach(x => {
-    if (x.id.length > labelLength) {
-        labelLength = x.id.length;
-    }
-});
-
-const colors = [
-    "green",
-    "blue",
-    "yellow",
-    "pink",
-    "orange"
-];
-
+// add label to component
+let longestLabelLength = 0;
 components.forEach(component => {
-    const runner = runners.find(runner => {
-        const supportedTypes = runner.supports || [];
-        return supportedTypes.find(type => component.type == type);
-    });
-
-    if (!runner) {
-        console.log(`No runner for component "${component.id}" of type "${component.type}" available.`);
-        process.exit(1);
-    }
+        if (component.id.length > longestLabelLength) {
+            longestLabelLength = component.id.length;
+        }
 });
+components.forEach(component => {
+    component.label = padright(component.id, longestLabelLength, " ");
+});
+
+// add color to component
+const colors = [ "green", "yellow", "pink", "blue", "orange" ];
+components.forEach((component, index) => {
+    component.color = colors[index];
+});
+
+const runners = convertToArray(data.runners);
+const runnerService = new RunnerService(runners);
+
+const notRunnableComponents = components.filter(component => !runnerService.isSupported(component));
+if (notRunnableComponents.length > 0) {
+    console.log("ERROR - the following components does not have a runner:");
+    notRunnableComponents.forEach(component => {
+        console.log(`  id: ${component.id} - type: ${component.type}`);
+    });
+    process.exit(1);
+}
 
 components.forEach((component, index) => {
-    component.label = padright(component.id, labelLength, " ");
-    component.color = colors[index];
-
-    runComponent(component, runner, runner.pause);
+    const runner = runnerService.getRunnerFor(component);
+    
+    const options = {
+        ignoreDelay: index == 0
+    };
+    
+    runner.run(component, options);
 });
