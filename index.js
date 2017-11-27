@@ -38,7 +38,9 @@ components.forEach(component => {
 // add color to component
 const colors = [ "green", "yellow", "cyan", "orange", "blue" ];
 components.forEach((component, index) => {
-    component.color = colors[index];
+    if (!component.color) {
+        component.color = colors[index];        
+    }
 });
 
 const runners = convertToArray(data.runners);
