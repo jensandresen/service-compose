@@ -27,6 +27,34 @@ class Runner {
         }
     }
 
+    runAsync(component, options = {}) {
+        const cmd = this.prepareCommandFor(component);
+        const args = this.prepareArgumentsFor(component);
+        const env = this.prepareEnvironmentVariablesFor(component);
+
+        let delay = this.runner.delay || 0;
+        if (options.ignoreDelay) {
+            delay = 0;
+        }
+
+        const command = new Command(component.label, component.color, cmd, args, env);
+
+        if (delay > 0) {
+            return new Promise(resolve => {
+                command.print(`Start is delayed ${delay} msec.`);
+                setTimeout(() => {
+                    command.execute();
+                    resolve();
+                }, delay);    
+            });
+        }
+        
+        return new Promise(resolve => {
+            command.execute();
+            resolve();
+        });
+    }
+
     extractPlaceholdersFrom(component) {
         const list = new Array();
         for (let key in component.app) {

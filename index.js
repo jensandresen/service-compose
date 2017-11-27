@@ -53,12 +53,14 @@ if (notRunnableComponents.length > 0) {
     process.exit(1);
 }
 
-components.forEach((component, index) => {
-    const runner = runnerService.getRunnerFor(component);
-    
-    const options = {
-        ignoreDelay: index == 0
-    };
-    
-    runner.run(component, options);
-});
+components
+    .map((component, index) => {
+        const runner = runnerService.getRunnerFor(component);
+        
+        const options = {
+            ignoreDelay: index == 0
+        };
+        
+        return () => runner.runAsync(component, options);
+    })
+    .reduce((p, f) => p.then(f), Promise.resolve());
