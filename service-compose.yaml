@@ -1,6 +1,6 @@
 components:
   frontend:
-    type: website
+    type: nodejs
     app:
       root: ./apps/frontend
       start: index.js
@@ -8,7 +8,7 @@ components:
     environment:
       backend_url: http://localhost:3001
   backend:
-    type: website
+    type: nodejs
     app:
       root: ./apps/backend
       start: server.js
