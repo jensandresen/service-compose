@@ -1,14 +1,35 @@
 {
   "name": "service-compose",
   "version": "0.1.0",
-  "description": "",
+  "description": "A utility to orchestrate the execution of one or more services.",
   "main": "index.js",
+  "preferGlobal": true,
+  "bin": "index.js",
+  "files": [
+    "command.js", 
+    "index.js", 
+    "runner.js", 
+    "runnerservice.js", 
+    "utils.js"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "service",
+    "services",
+    "compose",
+    "microservice",
+    "microservices",
+    "service compose",
+    "service-compose"
+  ],
+  "author": "Jens Andresen",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jensandresen/service-compose/issues"
+  },
+  "homepage": "https://github.com/jensandresen/service-compose#readme",
   "dependencies": {
     "chalk": "^2.3.0",
     "minimist": "^1.2.0",
