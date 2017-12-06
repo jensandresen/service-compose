@@ -10,12 +10,12 @@ const args = argsParser(process.argv.slice(2));
 
 function printHelp() {
     console.log("Usage:");
-    console.log("  service-compose [-f|--file <filename>]")
-    console.log("  service-compose --version")
-    console.log("  service-compose --help")
-    console.log("")
-    console.log("Options:")
-    console.log("  -f, --file <filename>    Specify a compose file (default: service-compose.yml)")
+    console.log("  service-compose [-f|--file <filename>]");
+    console.log("  service-compose --version");
+    console.log("  service-compose --help");
+    console.log("");
+    console.log("Options:");
+    console.log("  -f, --file <filename>    Specify a compose file (default: service-compose.yml)");
     console.log("  --version                Shows the version of the current installation");
     console.log("  --help                   Shows this help information");
     console.log("");
