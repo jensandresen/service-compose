@@ -55,6 +55,16 @@ if (!fs.existsSync(filename)) {
 
 const data = yamlFile.readFileSync(filename);
 
+if (!data.version) {
+    console.log(`Error, missing version information from compose file.`);
+    process.exit(1);
+}
+
+if (data.version != 1) {
+    console.log(`Version "${data.version}" of the compose file is not supported.`);
+    process.exit(1);
+}
+
 function convertToArray(obj) {
     const result = new Array();
     for (let key in obj) {
