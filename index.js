@@ -4,7 +4,7 @@ const yamlFile = require("yamlfile");
 const padright = require("pad-right");
 const argsParser = require("minimist");
 const RunnerService = require("./runnerservice.js");
-
+const { convertToArray } = require("./utils.js");
 
 const args = argsParser(process.argv.slice(2));
 
@@ -64,19 +64,6 @@ if (data.version != 1) {
     console.log(`Version "${data.version}" of the compose file is not supported.`);
     process.exit(1);
 }
-
-function convertToArray(obj) {
-    const result = new Array();
-    for (let key in obj) {
-        if (obj.hasOwnProperty(key)) {
-            const c = obj[key];
-            c.id = key;
-            result.push(c);
-        }
-    }
-    return result;
-}
-
 
 const components = convertToArray(data.components);
 
