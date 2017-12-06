@@ -86,10 +86,24 @@ components.forEach((component, index) => {
     }
 });
 
+// add runners to component
 const runners = convertToArray(data.runners);
 const runnerService = new RunnerService(runners);
 
-const notRunnableComponents = components.filter(component => !runnerService.isSupported(component));
+components.forEach(component => {
+    const runner = runnerService.getRunnerFor(component);
+    component.runner = runner;    
+});
+
+// validate that all components can be run
+const notRunnableComponents = components.filter(component => {
+    if (component.runner) {
+        return false;
+    } else {
+        return true;
+    }
+});
+
 if (notRunnableComponents.length > 0) {
     console.log("ERROR - the following components does not have a runner:");
     notRunnableComponents.forEach(component => {
