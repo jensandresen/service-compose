@@ -1,6 +1,6 @@
 {
   "name": "service-compose",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A utility to orchestrate the execution of one or more services.",
   "main": "index.js",
   "preferGlobal": true,
