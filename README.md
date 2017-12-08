@@ -13,36 +13,36 @@ Please note, if you have the luxury to either pick Docker and Docker Compose, or
 # Getting Started
 ## Installation
 The utility is available on the official npm registry and can be installed by running the following in a command prompt:
-````
+```SHELL
 $ npm install -g service-compose
-````
+```
 
 ## Usage
 
 By convention the default name for a compose file is `service-compose.yml` and if no file is specified when executing the service compose utility it will look for that file in the current working directory. So this means that you can execute it the following way:
 
-````
+```SHELL
 $ service-compose
-````
+```
 
 You can specify another compose file by running the following:
 
-````
+```SHELL
 $ service-compose -f <path_to_file>
-````
+```
 
 Where you replace `<path_to_file>` with the path (relative or absolute) to your compose file.
 
 For additional help and usage information run the following:
-````
+```SHELL
 $ service-compose --help
-````
+```
 
 # Compose File
 A _compose file_ is a __yaml__ file that defines how each service should be configured and executed. The structure of the _compose file_ is very important and _attention to the details_ is required.
 
 The following is an example of how a compose file could look like:
-````YAML
+```YAML
 version: 1
 components:
   frontend:
@@ -64,7 +64,7 @@ runners:
       - <root>/<start>
     supports:
       - nodejs
-````
+```
 
 ## Sections
 
@@ -105,11 +105,11 @@ A component is first and foremost defined by a name (which will be it's identifi
 #### Environment
 This is a key/value object where the name of each property will be the name of the environment variable and the value of the property will be the value of the environment variable. Here is an example:
 
-````YAML
+```YAML
 environment:
   backend_url: foo
   another_variable: bar
-````
+```
 
 This will result in the the environment variable `backend_url=foo` and `another_variable=bar` being available from the application in it's running context.
 
@@ -128,14 +128,14 @@ A runner is defined by a name (which will be it's identifier throughout e.g. `no
 ##### Special remark
 The `args` of a runner has special functionality built around it. To be able to pass executable application information to a specific runner, you can build it up by using all the `app` properties from your components. Take a look at this runner:
 
-````YAML
+```YAML
 runners:
   iisexpress:
     cmd: iisexpress
     args:
       - /port:<port>
       - /path:"MakeAbsolute(<root>)"
-````
+```
 
 This configures a runner for a development webserver called `iisexpress` (which in this example can be executed by running `iisexpress` on the command line). The webserver can be configured with a port on which the application should be running on and then it needs a full __absolute__ path to the root directory of the application. In the example above the built in function __MakeAbsolute(...)__ can turn a relative path into an absolute path.
 
